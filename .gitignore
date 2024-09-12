@@ -1,0 +1,6 @@
+test
+settings.json
+__pycache__
+.env.pats
+*.swp
+scripts/.env

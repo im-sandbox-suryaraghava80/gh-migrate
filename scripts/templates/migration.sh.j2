@@ -1,0 +1,103 @@
+#!/bin/bash
+
+source .env.pats
+
+##########################################
+# Capture pre-migration source stats
+##########################################
+{% if dry_run %}
+gh migrate stats --before --source --dry-run --wave {{ wave }} --pat ${source_pat}
+gh migrate snapshots --before --source --dry-run --wave {{ wave }} --pat ${source_pat}
+{% else %}
+gh migrate stats --before --source --wave {{ wave }} --pat ${source_pat}
+gh migrate snapshots --before --source --wave {{ wave }} --pat ${source_pat}
+{% endif %}
+
+##########################################
+# Migrate!
+##########################################
+{%- for org in orgs %}
+gh gei migrate-org \
+    --github-target-enterprise ${target_slug} \
+    --github-source-org {{ org["source_name"] }} \
+    {%- if dry_run %}
+    --github-target-org {{ org["dry_run_target_name"] }} \
+    {%- else %}
+    --github-target-org {{ org["target_name"] }} \
+    {%- endif %}
+    --github-source-pat ${source_pat} \
+    --github-target-pat ${target_pat} \
+    --verbose
+{% endfor %}
+
+##########################################
+# Capture post-migration source stats
+##########################################
+{%- if dry_run %}
+gh migrate stats --after --source --dry-run --wave {{ wave }} --pat ${source_pat}
+{%- else %}
+gh migrate stats --after --source --wave {{ wave }} --pat ${source_pat}
+{% endif %}
+
+##########################################
+# Capture post-migration target stats
+##########################################
+{%- if dry_run %}
+gh migrate stats --after --target --dry-run --wave {{ wave }} --pat ${target_pat}
+gh migrate snapshots --after --target --dry-run --wave {{ wave }} --pat ${target_pat}
+{%- else %}
+gh migrate stats --after --target --wave {{ wave }} --pat ${target_pat}
+gh migrate snapshots --after --target --wave {{ wave }} --pat ${target_pat}
+{% endif %}
+
+##########################################
+# Get migration logs
+##########################################
+{%- if dry_run %}
+gh migrate get logs --dry-run --wave {{ wave }} --pat ${target_pat}
+{%- else %}
+gh migrate get logs --wave {{ wave }} --pat ${target_pat}
+{% endif %}
+
+##########################################
+# Cleanup
+##########################################
+export GITHUB_TOKEN=${target_pat}
+
+{%- for org in orgs %}
+gh repo delete \
+    {%- if dry_run %}
+    {{ org["dry_run_target_name"] }}/gei-migration-results
+    {%- else %}
+    {{ org["target_name"] }}/gei-migration-results
+    {%- endif %}
+{% endfor %}
+
+##########################################
+# Generate post-migration scripts
+##########################################
+{%- if dry_run %}
+gh migrate scripts post-migration --dry-run --wave {{ wave }}
+{%- else %}
+gh migrate scripts post-migration --wave {{ wave }}
+{% endif %}
+
+##########################################
+# Pause and ask for confirmation
+##########################################
+read -p "Please confirm the migration workbook is closed (Y/N): " confirmation
+
+##########################################
+# Generate post-migration report
+##########################################
+{%- if dry_run %}
+gh migrate report --dry-run --wave {{ wave }}
+{%- else %}
+gh migrate report --wave {{ wave }}
+{% endif %}
+
+echo "*** Migration activities completed.  Begin post-migration activities ***"
+echo ""
+echo "Once complete:"
+echo "1. Update 'Mapping - Org' to reflect the final source_name and target_name."
+echo "2. Run gh migrate scripts migration --final --wave {{ wave }} to generate final report." 

@@ -1,0 +1,13 @@
+# This file can also be called using the GitHub CLI:
+#  gh api graphql  -f query="`cat migrate/graphql/migration-status.graphql`" -F org='im-infomagnus'
+query ($org: String!) {
+  organization(login: $org) {
+    queued: repositoryMigrations(state: QUEUED) { totalCount }
+    notStarted: repositoryMigrations(state: NOT_STARTED) { totalCount }
+    inProgress: repositoryMigrations(state: IN_PROGRESS) { totalCount }
+    succeeded: repositoryMigrations(state: SUCCEEDED) { totalCount }
+    failed: repositoryMigrations(state: FAILED) { totalCount }
+    pendingValidation: repositoryMigrations(state: PENDING_VALIDATION) { totalCount }
+    failedValidation: repositoryMigrations(state: FAILED_VALIDATION) { totalCount }
+  }
+}

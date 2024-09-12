@@ -1,0 +1,25 @@
+# This file can also be called using the GitHub CLI:
+#  gh api graphql --paginate -F owner='im-infomagnus' -F name='gh-migration-automation' -F pageSize='1' -f query="`cat graphql/issues.graphql`"
+query ($owner: String!, $name: String!, $pageSize: Int!, $endCursor: String) {
+  repository(owner: $owner, name: $name) {
+    owner {
+      login
+    }
+    name
+    issues(first: $pageSize, after: $endCursor) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      nodes {
+        comments {
+          totalCount
+        }
+        timelineItems {
+          totalCount
+        }
+      }
+    }
+  }
+}

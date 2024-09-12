@@ -1,0 +1,33 @@
+# query ($login: String!, $pageSize: Int!, $endCursor: String) {
+#   organization(login: $login) {
+#     teams(first: $pageSize, after: $endCursor) {
+#       pageInfo {
+#         hasNextPage
+#         endCursor
+#       }
+#       nodes {
+#         name
+#         id
+#         databaseId
+#         slug
+#         combinedSlug
+#         description
+#         privacy
+#         createdAt
+#         updatedAt
+#         members(first: 100) {
+#           totalCount
+#           nodes {
+#             login
+#           }
+#         }
+#         repositories(first: 100) {
+#           totalCount
+#           nodes {
+#             name
+#           }
+#         }
+#       }
+#     }
+#   }
+# }

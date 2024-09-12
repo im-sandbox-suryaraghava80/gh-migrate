@@ -1,0 +1,24 @@
+query ($login: String!, $pageSize: Int!, $endCursor: String) {
+  organization(login: $login) {
+    mannequins(
+      first: $pageSize
+      after: $endCursor
+      orderBy: { field: LOGIN, direction: ASC }
+    ) {
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      nodes {
+        login       # mannequin-user
+        id          # mannequin-id
+        claimant {
+          login     # target-user
+        }
+        email
+        createdAt
+      }
+    }
+  }
+}

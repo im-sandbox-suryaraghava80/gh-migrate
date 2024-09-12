@@ -1,0 +1,39 @@
+#!/bin/bash
+
+source .env.pats
+
+##########################################
+# Capture post-migration source stats
+##########################################
+{%- if dry_run %}
+gh migrate stats --after --source --dry-run --wave {{ wave }} --pat ${source_pat}
+gh migrate snapshots --after --source --dry-run --wave {{ wave }} --pat ${source_pat}
+{%- else %}
+gh migrate stats --after --source --wave {{ wave }} --pat ${source_pat}
+gh migrate snapshots --after --source --wave {{ wave }} --pat ${source_pat}
+{% endif %}
+
+##########################################
+# Capture post-migration target stats
+##########################################
+{%- if dry_run %}
+gh migrate stats --after --target --dry-run --wave {{ wave }} --pat ${target_pat}
+gh migrate snapshots --after --target --dry-run --wave {{ wave }} --pat ${target_pat}
+{%- else %}
+gh migrate stats --after --target --wave {{ wave }} --pat ${target_pat}
+gh migrate snapshots --after --target --wave {{ wave }} --pat ${target_pat}
+{% endif %}
+
+##########################################
+# Pause and ask for confirmation
+##########################################
+read -p "Please confirm the migration workbook is closed (Y/N): " confirmation
+
+##########################################
+# Generate post-migration report
+##########################################
+{%- if dry_run %}
+gh migrate report --dry-run --wave {{ wave }} --final
+{%- else %}
+gh migrate report --wave {{ wave }} --final
+{% endif %}

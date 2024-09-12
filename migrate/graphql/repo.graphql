@@ -1,0 +1,95 @@
+query ($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    name
+    isLocked
+    lockReason
+    branches: refs(refPrefix: "refs/heads/") {
+      totalCount
+    }
+    branchProtectionRules {
+      totalCount
+    }
+    commitComments {
+      totalCount
+    }
+    collaborators {
+      totalCount
+    }
+    createdAt
+    diskUsage
+    discussions {
+      totalCount
+    }
+    hasWikiEnabled
+    isFork
+    isArchived
+    issues(first: 1) {
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      nodes {
+        timeline {
+          totalCount
+        }
+        comments {
+          totalCount
+        }
+      }
+    }
+    milestones {
+      totalCount
+    }
+    name
+    owner {
+      login
+    }
+    packages {
+      totalCount
+    }
+    projects {
+      totalCount
+    }
+    pullRequests(first: 1) {
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      nodes {
+        comments {
+          totalCount
+        }
+        commits {
+          totalCount
+        }
+        number
+        reviews(first: 1) {
+          totalCount
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
+          nodes {
+            comments {
+              totalCount
+            }
+          }
+        }
+        timeline {
+          totalCount
+        }
+      }
+    }
+    pushedAt
+    releases {
+      totalCount
+    }
+    tags: refs(refPrefix: "refs/tags/") {
+      totalCount
+    }
+    updatedAt
+    url
+  }
+}

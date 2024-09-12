@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# If file '.env' does not exist print error
+if [ ! -f .env ]; then
+    echo "Please create a .env file with the following content:"
+    echo ""
+    echo "export GH_SOURCE_PAT='<SOURCE ORG PAT>'"
+    echo "export GH_TARGET_PAT='<TARGET ORG PAT>'"
+    exit 1
+fi
+
+source .env.pats
+export GITHUB_TOKEN=${target_pat}
+
+
+{% for repo in repos %}
+{%- if repo["isArchived"] %}
+gh api --method PATCH -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" repos/{{ repo["owner.login"] }}/{{ repo["name"] }} -F "archived=true"
+{%- else %}
+gh api --method PATCH -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" repos/{{ repo["owner.login"] }}/{{ repo["name"] }} -F "archived=false"
+{%- endif %}
+{%- endfor %}

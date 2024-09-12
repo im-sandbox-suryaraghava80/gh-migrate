@@ -1,0 +1,28 @@
+query (
+  $owner: String!
+  $name: String!
+  $number: Int!
+  $pageSize: Int!
+  $endCursor: String
+) {
+  repository(owner: $owner, name: $name) {
+    owner {
+      login
+    }
+    name
+    pullRequest(number: $number) {
+      reviews(first: $pageSize, after: $endCursor) {
+        totalCount
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+        nodes {
+          comments {
+            totalCount
+          }
+        }
+      }
+    }
+  }
+}

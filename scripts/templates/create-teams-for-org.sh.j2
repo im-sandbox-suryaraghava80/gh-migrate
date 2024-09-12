@@ -1,0 +1,8 @@
+#!/bin/bash
+
+source .env.pats
+export GITHUB_TOKEN=${target_pat}
+
+{% for team in teams %}
+gh api -X POST orgs/{{ target_org }}/teams -f name='{{ team.slug }}' -f privacy='{{ team.privacy }}' --verbose
+{%- endfor %}

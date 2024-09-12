@@ -1,0 +1,63 @@
+# This file can also be called using the GitHub CLI:
+#  gh api graphql --paginate -F slug='cgf-emu' -F pageSize='1' -f query="`cat graphql/enterprise.graphql`"
+query ($invitationToken: String, $slug: String!, $pageSize: Int!, $endCursor: String) {
+  enterprise(invitationToken: $invitationToken, slug: $slug) {
+    name
+    slug
+    organizations(first: $pageSize, after: $endCursor) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      nodes {
+        announcement
+        announcementExpiresAt
+        archivedAt
+        createdAt
+        description
+        domains {
+          totalCount
+        }
+        ipAllowListEnabledSetting
+        ipAllowListForInstalledAppsEnabledSetting
+        mannequins {
+          totalCount
+        }
+        membersCanForkPrivateRepositories
+        membersWithRole {
+          totalCount
+        }
+        name
+        packages {
+          totalCount
+        }
+        projects {
+          totalCount
+        }
+        projectsV2 {
+          totalCount
+        }
+        repositories {
+          totalCount
+        }
+        repositoryMigrations {
+          totalCount
+        }
+        requiresTwoFactorAuthentication
+        rulesets {
+          totalCount
+        }
+        samlIdentityProvider {
+          externalIdentities {
+            totalCount
+          }
+        }
+        teams {
+          totalCount
+        }
+        updatedAt
+      }
+    }
+  }
+}

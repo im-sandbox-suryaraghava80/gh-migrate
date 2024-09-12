@@ -1,0 +1,113 @@
+query ($login: String!, $pageSize: Int!, $endCursor: String) {
+  organization(login: $login) {
+    repositories(
+      first: $pageSize
+      after: $endCursor
+      orderBy: { field: NAME, direction: ASC }
+    ) {
+      totalCount
+      totalDiskUsage
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      nodes {
+        name
+        owner {
+          login
+        }
+
+        isLocked
+        lockReason
+        branches: refs(refPrefix: "refs/heads/") {
+          totalCount
+        }
+        branchProtectionRules {
+          totalCount
+        }
+        commitComments {
+          totalCount
+        }
+        collaborators {
+          totalCount
+        }
+        createdAt
+        diskUsage
+        discussions {
+          totalCount
+        }
+        hasWikiEnabled
+        isFork
+        forkCount
+        isArchived
+        issues(first: 1) {
+          totalCount
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
+          nodes {
+            timelineItems {
+              totalCount
+            }
+            comments {
+              totalCount
+            }
+          }
+        }
+        milestones {
+          totalCount
+        }
+        packages {
+          totalCount
+        }
+        projects {
+          totalCount
+        }
+        pullRequests(first: 1) {
+          totalCount
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
+          nodes {
+            comments {
+              totalCount
+            }
+            commits {
+              totalCount
+            }
+            # timelineItems {
+              # totalCount
+            # }
+            # reviews(first: 5) {
+            #   totalCount
+            #   pageInfo {
+            #     endCursor
+            #     hasNextPage
+            #   }
+            #   nodes {
+            #     bodyText
+            #     comments(first: 5) {
+            #       totalCount
+            #       nodes {
+            #         bodyText
+            #       }
+            #     }
+            #   }
+            # }
+          }
+        }
+        pushedAt
+        releases {
+          totalCount
+        }
+        tags: refs(refPrefix: "refs/tags/") {
+          totalCount
+        }
+        updatedAt
+        url
+      }
+    }
+  }
+}
